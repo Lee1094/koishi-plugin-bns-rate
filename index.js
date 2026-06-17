@@ -33,15 +33,15 @@ async function fetchRate(ctx, url) {
     throw new Error('无法解析页面汇率数据，页面结构可能已变更')
   }
 
-  // match[0] = 平台极速收货回收价, match[1] = 最低卖家挂单价
-  const forward = parseFloat(forwardMatches[1][1])
+  // match[0] = 平台极速收货回收价, match[last] = 最低卖家挂单价
+  const forward = parseFloat(forwardMatches[forwardMatches.length - 1][1])
 
   const reverseMatches = [...html.matchAll(REVERSE_RE)]
   if (reverseMatches.length < 2) {
     throw new Error('无法解析页面反向汇率数据')
   }
 
-  const reverse = parseFloat(reverseMatches[1][1])
+  const reverse = parseFloat(reverseMatches[reverseMatches.length - 1][1])
 
   if (forward < 100 || forward > 200 || reverse < 0.001 || reverse > 0.02) {
     throw new Error(`解析的汇率超出合理范围: forward=${forward}, reverse=${reverse}`)

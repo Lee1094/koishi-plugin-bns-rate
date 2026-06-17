@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install *)",
+      "Read(//c/Program Files/**)",
+      "Bash(cmd //c \"where npm\")",
+      "WebFetch(domain:registry.npmjs.org)"
+    ]
+  }
+}

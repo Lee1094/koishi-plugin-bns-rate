@@ -72,6 +72,7 @@ function formatMessage(forward, reverse, timestamp) {
     timeZone: 'Asia/Shanghai',
   })
   return [
+    'DD373当前时段神石比例如下：',
     `1元 = ${forward}神石`,
     `1神石 = ${reverse}元`,
     `查询时间: ${time}`,

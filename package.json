@@ -1,6 +1,6 @@
 {
   "name": "koishi-plugin-bns-rate",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Fetch BNS Classic Divine Stone exchange rate from dd373.com",
   "main": "index.js",
   "license": "MIT",
@@ -11,13 +11,13 @@
   "devDependencies": {
     "koishi": "^4.18.0"
   },
-  "service": {
-    "required": ["http"]
-  },
   "koishi": {
     "description": {
       "zh": "从 dd373.com 获取剑灵怀旧服神石实时汇率，输入命令即可查询最低比例。支持 神石/bnsrate/shenshi 命令。",
       "en": "Fetch BNS Classic Divine Stone exchange rate from dd373.com"
+    },
+    "service": {
+      "required": ["http"]
     }
   }
 }

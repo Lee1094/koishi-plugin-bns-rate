@@ -28,27 +28,43 @@ async function fetchRate(ctx, url) {
 
   const html = typeof response === 'string' ? response : response.data
 
+  // 找到所有 "1元=XXX神石" 匹配
+  // 回收价格式: "1元=162.4神石 0.0062元/神石" (没有"1神石=")
+  // 卖家挂单格式: "1元=145.9873神石 1神石=0.0068元" (有"1神石=")
   const forwardMatches = [...html.matchAll(FORWARD_RE)]
-  if (forwardMatches.length === 0) {
+  let bestSeller = null
+  for (const m of forwardMatches) {
+    const ctx = html.substring(Math.max(0, m.index - 50), m.index + 100)
+    if (ctx.includes('1神石=')) {
+      bestSeller = parseFloat(m[1])
+      break
+    }
+  }
+
+  if (bestSeller === null) {
     throw new Error('无法解析页面汇率数据，页面结构可能已变更')
   }
 
-  // 比例最佳排序下，第一个匹配就是最佳卖家挂单价
-  // 平台回收价区域已不再使用 '1元=X神石' 格式
-  const forward = parseFloat(forwardMatches[0][1])
-
+  // 取对应的反向汇率
   const reverseMatches = [...html.matchAll(REVERSE_RE)]
-  if (reverseMatches.length === 0) {
+  let bestReverse = null
+  for (const m of reverseMatches) {
+    const ctx = html.substring(Math.max(0, m.index - 50), m.index + 100)
+    if (!ctx.includes('/神石')) {
+      bestReverse = parseFloat(m[1])
+      break
+    }
+  }
+
+  if (bestReverse === null) {
     throw new Error('无法解析页面反向汇率数据')
   }
 
-  const reverse = parseFloat(reverseMatches[0][1])
-
-  if (forward < 100 || forward > 200 || reverse < 0.001 || reverse > 0.02) {
-    throw new Error(`解析的汇率超出合理范围: forward=${forward}, reverse=${reverse}`)
+  if (bestSeller < 100 || bestSeller > 200 || bestReverse < 0.001 || bestReverse > 0.02) {
+    throw new Error(`解析的汇率超出合理范围: forward=${bestSeller}, reverse=${bestReverse}`)
   }
 
-  return { forward, reverse }
+  return { forward: bestSeller, reverse: bestReverse }
 }
 
 function formatMessage(forward, reverse, timestamp) {

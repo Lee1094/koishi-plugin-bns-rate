@@ -1,6 +1,6 @@
 {
   "name": "koishi-plugin-bns-rate",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Fetch BNS Classic Divine Stone exchange rate from dd373.com",
   "main": "index.js",
   "license": "MIT",

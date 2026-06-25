@@ -1,0 +1,6 @@
+# Ignore everything except plugin files
+/*
+!.gitignore
+!/.github
+!/index.js
+!/package.json

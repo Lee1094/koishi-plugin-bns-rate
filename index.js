@@ -3,7 +3,7 @@ const { Schema } = require('koishi')
 const DEFAULT_URL = 'https://www.dd373.com/s-d5gqt8-0-0-0-0-0-0-0-0-0-0-0-1-0-5-0.html'
 
 const FORWARD_RE = /1元\s*=\s*(\d+\.?\d*)神石/g
-const REVERSE_RE = /1神石\s*=\s*(\d+\.?\d*)元/g
+
 
 const Config = Schema.object({
   url: Schema.string()
@@ -45,23 +45,11 @@ async function fetchRate(ctx, url) {
     throw new Error('无法解析页面汇率数据，页面结构可能已变更')
   }
 
-  // 取对应的反向汇率
-  const reverseMatches = [...html.matchAll(REVERSE_RE)]
-  let bestReverse = null
-  for (const m of reverseMatches) {
-    const ctx = html.substring(Math.max(0, m.index - 50), m.index + 100)
-    if (!ctx.includes('/神石')) {
-      bestReverse = parseFloat(m[1])
-      break
-    }
-  }
+  // 反向汇率直接用正向算，更准: 1神石 = 1/forward 元
+  const bestReverse = Math.round((1 / bestSeller) * 10000) / 10000
 
-  if (bestReverse === null) {
-    throw new Error('无法解析页面反向汇率数据')
-  }
-
-  if (bestSeller < 100 || bestSeller > 200 || bestReverse < 0.001 || bestReverse > 0.02) {
-    throw new Error(`解析的汇率超出合理范围: forward=${bestSeller}, reverse=${bestReverse}`)
+  if (bestSeller < 100 || bestSeller > 200) {
+    throw new Error(`解析的汇率超出合理范围: forward=${bestSeller}`)
   }
 
   return { forward: bestSeller, reverse: bestReverse }

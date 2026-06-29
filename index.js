@@ -64,6 +64,7 @@ function formatMessage(forward, reverse, timestamp) {
     `1元 = ${forward}神石`,
     `1神石 = ${reverse}元`,
     `查询时间: ${time}`,
+    `详情: https://www.dd373.com/s-d5gqt8.html`,
   ].join('\n')
 }
 
